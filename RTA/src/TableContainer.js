@@ -1,4 +1,6 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+
 import {
   useTable,
   useSortBy,
@@ -8,8 +10,14 @@ import {
 } from "react-table";
 import { Table, Row, Col, Button, Input, CustomInput } from "reactstrap";
 import { Filter, DefaultColumnFilter } from "./filters";
-
 const TableContainer = ({ columns, data, renderRowSubComponent }) => {
+  const [filterInput, setFilterInput] = useState("");
+
+  const styleforHeader = {
+    color: "white",
+    backgroundColor: "Darkblue",
+  };
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -25,6 +33,8 @@ const TableContainer = ({ columns, data, renderRowSubComponent }) => {
     nextPage,
     previousPage,
     setPageSize,
+    setFilter,
+    setAllFilters,
     state: { pageIndex, pageSize },
   } = useTable(
     {
@@ -52,8 +62,24 @@ const TableContainer = ({ columns, data, renderRowSubComponent }) => {
     gotoPage(page);
   };
 
+  const handleFilterChange = (e) => {
+    const value = e.target.value || undefined;
+
+    //  const valuess = ["name", "email"];
+    setFilter("name", value);
+
+    // Update the show.name filter. Now our table will filter and show only the rows which have a matching value
+    setFilterInput(value);
+    console.log(value);
+  };
+
   return (
     <Fragment>
+      <input
+        value={filterInput}
+        onChange={handleFilterChange}
+        placeholder={"Search name"}
+      />
       <label>Show</label>
       <CustomInput
         style={{ width: "10%" }}
@@ -68,8 +94,8 @@ const TableContainer = ({ columns, data, renderRowSubComponent }) => {
         ))}
       </CustomInput>
 
-      <Table bordered hover {...getTableProps()}>
-        <thead style={{ background: "Blue" }}>
+      <Table striped bordered hover {...getTableProps()}>
+        <thead style={styleforHeader}>
           {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
@@ -105,22 +131,25 @@ const TableContainer = ({ columns, data, renderRowSubComponent }) => {
         </tbody>
       </Table>
 
-      <Row style={{ maxWidth: 1000, margin: "0 auto", textAlign: "center" }}>
+      <Row
+        style={{
+          maxWidth: 1000,
+          marginLeft: "450px",
+          textAlign: "center",
+        }}
+      >
         <Col md={3}>
           <Button
+            style={{
+              maxWidth: 1000,
+              textAlign: "center",
+            }}
             color="primary"
             onClick={() => gotoPage(0)}
             disabled={!canPreviousPage}
           >
             Previous{" "}
           </Button>
-          {/* <Button
-            color="primary"
-            onClick={previousPage}
-            disabled={!canPreviousPage}
-          >
-            {"<"}
-          </Button> */}
         </Col>
         <Col md={2} style={{ marginTop: 7 }}>
           Page{" "}

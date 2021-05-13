@@ -8,11 +8,15 @@ import {
   CardTitle,
 } from "reactstrap";
 import TableContainer from "./TableContainer";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { Modal, Button, Form } from "react-bootstrap";
+import ModalComponent from "./ModalComponent";
 import { SelectColumnFilter } from "./filters";
-import Modal from "./Modal";
+
 const App = () => {
+  const [modalShow, setModalShow] = React.useState(false);
+
   const [data, setData] = useState([]);
+
   useEffect(() => {
     const doFetch = async () => {
       const response = await fetch(
@@ -20,7 +24,6 @@ const App = () => {
       );
       const body = await response.json();
       console.log(body);
-      // const contacts = body.results;
       setData(body);
     };
     doFetch();
@@ -63,82 +66,71 @@ const App = () => {
       //   ),
       // },
       {
-        Header: "Title",
+        Header: "NAME",
         accessor: "name",
         // disableSortBy: true,
         // Filter: SelectColumnFilter,
         // filter: "equals",
       },
       {
-        Header: "First Name",
+        Header: "USERNAME",
         accessor: "username",
       },
       {
-        Header: "Last Name",
+        Header: "EMAIL",
         accessor: "email",
       },
-      {
-        Header: "Email",
-        accessor: "phone",
-      },
-      {
-        Header: "City",
-        accessor: "website",
-      },
-      {
-        Header: "Hemisphere",
-        Cell: ({ cell }) => (
-          <button
-            type="button"
-            class="btn btn-primary"
-            value={cell.row.values.name}
-            data-toggle="modal"
-            data-target="#exampleModal"
-          >
-            Launch demo modal
-          </button>
-        ),
 
-        handleClickGroup() {
-          alert("Shubhangi");
+      {
+        Header: "ADDRESS",
+        accessor: (values) => {
+          const obj = values.address;
+          return (
+            obj.suite + " " + obj.street + " " + obj.city + " " + obj.zipcode
+          );
         },
-        // accessor: (values) => {
-        //   const { latitude, longitude } = values.location.coordinates;
-        //   const first = Number(latitude) > 0 ? "N" : "S";
-        //   const second = Number(longitude) > 0 ? "E" : "W";
-        //   return first + "/" + second;
-        // },
-        // disableSortBy: true,
-        // Filter: SelectColumnFilter,
-        //  filter: "equals",
-        //  Cell: ({ cell }) => {
-        //    const { value } = cell;
+      },
+      {
+        Header: "COMPANY",
+        accessor: "company.name",
+      },
+      {
+        Header: "ACTIONS",
+        id: "id",
+        accessor: (values) => {
+          const obj = values.id;
+          return obj;
+        },
 
-        // const pickEmoji = (value) => {
-        //   let first = value[0]; // N or S
-        //   let second = value[2]; // E or W
-        //   const options = ["⇖", "⇗", "⇙", "⇘"];
-        //   let num = first === "N" ? 0 : 2;
-        //   num = second === "E" ? num + 1 : num;
-        //   return options[num];
-        // };
-
-        //  return <div style={{ textAlign: "center", fontSize: 18 }}>{}</div>;
-        //  },
+        //cell opening tag
+        Cell: (rowData) => (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleDetailsButtonClick}
+          >
+            Details
+          </Button>
+        ), //cell closing tag
       },
     ],
+
     []
   );
 
+  const handleDetailsButtonClick = () => {
+    setModalShow(true);
+  };
   return (
     <Container style={{ marginTop: 100 }}>
-      <TableContainer
-        columns={columns}
-        data={data}
+      <TableContainer columns={columns} data={data} />
 
-        //   renderRowSubComponent={renderRowSubComponent}
+      <ModalComponent
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+        header="Shubhangi"
+        body="company is registered"
       />
-      <Modal />
     </Container>
   );
 };
