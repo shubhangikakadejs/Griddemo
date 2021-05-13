@@ -15,6 +15,7 @@ import { SelectColumnFilter } from "./filters";
 const App = () => {
   const [modalShow, setModalShow] = React.useState(false);
 
+  const [currentRow, setCurrentRow] = useState({});
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -23,7 +24,6 @@ const App = () => {
         "https://jsonplaceholder.typicode.com/users"
       );
       const body = await response.json();
-      console.log(body);
       setData(body);
     };
     doFetch();
@@ -68,9 +68,6 @@ const App = () => {
       {
         Header: "NAME",
         accessor: "name",
-        // disableSortBy: true,
-        // Filter: SelectColumnFilter,
-        // filter: "equals",
       },
       {
         Header: "USERNAME",
@@ -98,18 +95,22 @@ const App = () => {
         Header: "ACTIONS",
         id: "id",
         accessor: (values) => {
-          const obj = values.id;
+          const obj = values;
           return obj;
         },
 
         //cell opening tag
-        Cell: (rowData) => (
+        Cell: (obj) => (
           <Button
             variant="contained"
             color="primary"
-            onClick={handleDetailsButtonClick}
+            onClick={() => {
+              setCurrentRow(obj);
+              console.log("RowData->>>>> :", obj.cell.value);
+              handleDetailsButtonClick(obj.cell.value);
+            }}
           >
-            Details
+            DETAILS
           </Button>
         ), //cell closing tag
       },
@@ -118,18 +119,21 @@ const App = () => {
     []
   );
 
-  const handleDetailsButtonClick = () => {
+  const handleDetailsButtonClick = (user) => {
+    setCurrentRow(user);
     setModalShow(true);
+    console.log("current row ", currentRow);
+    console.log("handleDetailsButtonClick->>>>> :", user);
   };
+
   return (
     <Container style={{ marginTop: 100 }}>
       <TableContainer columns={columns} data={data} />
-
       <ModalComponent
         show={modalShow}
         onHide={() => setModalShow(false)}
         header="Shubhangi"
-        body="company is registered"
+        data={currentRow}
       />
     </Container>
   );

@@ -70,7 +70,6 @@ const TableContainer = ({ columns, data, renderRowSubComponent }) => {
 
     // Update the show.name filter. Now our table will filter and show only the rows which have a matching value
     setFilterInput(value);
-    console.log(value);
   };
 
   return (
@@ -114,8 +113,8 @@ const TableContainer = ({ columns, data, renderRowSubComponent }) => {
         <tbody {...getTableBodyProps()}>
           {page.map((row) => {
             prepareRow(row);
-            console.log(row);
-            console.log(prepareRow(row));
+            // console.log(row);
+            //  console.log(prepareRow(row));
             return (
               <Fragment key={row.getRowProps().key}>
                 <tr>

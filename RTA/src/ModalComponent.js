@@ -18,7 +18,7 @@ function ModalComponent(props) {
       </Modal.Header>
       <Modal.Body>
         <h4>Company Details</h4>
-        <p>{props.body}</p>
+        <p>{JSON.stringify(props.data)} </p>
       </Modal.Body>
       <Modal.Footer>
         <Button onClick={props.onHide}>Close</Button>
