@@ -1,6 +1,16 @@
 import React from "react";
 import { Input, CustomInput } from "reactstrap";
+import {
+  useTable,
+  useFilters,
+  useGlobalFilter,
+  useAsyncDebounce,
+} from "react-table";
 
+const widthGlobalSearch = {
+  color: "white",
+  backgroundColor: "Darkblue",
+};
 export const Filter = ({ column }) => {
   return (
     <div style={{ marginTop: 5 }}>
@@ -8,6 +18,33 @@ export const Filter = ({ column }) => {
     </div>
   );
 };
+
+export function GlobalFilter({
+  preGlobalFilteredRows,
+  globalFilter,
+  setGlobalFilter,
+}) {
+  const count = preGlobalFilteredRows.length;
+  const [value, setValue] = React.useState(globalFilter);
+  const onChange = useAsyncDebounce((value) => {
+    setGlobalFilter(value || undefined);
+  }, 200);
+
+  return (
+    <span className={widthGlobalSearch}>
+      Search:{" "}
+      <input
+        className={widthGlobalSearch}
+        value={value || ""}
+        onChange={(e) => {
+          setValue(e.target.value);
+          onChange(e.target.value);
+        }}
+        placeholder={`Search`}
+      />
+    </span>
+  );
+}
 
 export const DefaultColumnFilter = ({
   column: {
@@ -46,13 +83,6 @@ export const SelectColumnFilter = ({
       onChange={(e) => {
         setFilter(e.target.value || undefined);
       }}
-    >
-      {/* <option value=''>All</option>
-      {options.map((option) => (
-        <option key={option} value={option}>
-          {option}
-        </option>
-      ))} */}
-    </CustomInput>
+    ></CustomInput>
   );
 };
